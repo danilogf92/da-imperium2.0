@@ -7,6 +7,7 @@ use App\Filament\Resources\ProjectResource\RelationManagers;
 use App\Filament\Resources\ProjectResource\Widgets\StatsOverview;
 use App\Models\Project;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -31,44 +32,7 @@ class ProjectResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('pda_code')
-                    ->minLength(3)
-                    ->maxLength(255)
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Toggle::make('data_uploaded')
-                    ->disabled()
-                    ->required(),
-                Forms\Components\TextInput::make('rate')
-                    ->minValue(0)
-                    ->maxValue(5)
-                    ->required()
-                    ->numeric(),
-                Forms\Components\Select::make('company_id')
-                    ->relationship('company', 'name')
-                    ->required(),
-                Forms\Components\Select::make('state_id')
-                    ->relationship('state', 'state_name')
-                    ->required(),
-                Forms\Components\Select::make('investment_id')
-                    ->relationship('investment', 'investment_name')
-                    ->required(),
-                Forms\Components\Select::make('classification_of_investment_id')
-                    ->relationship('classificationOfInvestment', 'classification_name')
-                    ->required(),
-                Forms\Components\Select::make('justification_id')
-                    ->relationship('justification', 'justification_name')
-                    ->required(),
-                Forms\Components\DatePicker::make('start_date')
-                    ->required(),
-                Forms\Components\DatePicker::make('finish_date')
-                    ->required(),
-            ]);
+        return $form->schema(Project::getForm());
     }
 
     public static function canAccess(): bool
@@ -142,10 +106,12 @@ class ProjectResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('start_date')
                     ->date()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('finish_date')
                     ->date()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -156,7 +122,28 @@ class ProjectResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('companies')
+                    ->relationship('company', 'name')
+                    ->multiple()
+                    ->searchable()
+                    ->preload()
+                    ->visible($user = Auth::user()->role === 'admin'),
+                // Tables\Filters\SelectFilter::make('State')
+                //     ->relationship('state', 'state_name')
+                //     ->multiple()
+                //     ->searchable()
+                //     ->preload(),
+                Tables\Filters\SelectFilter::make('Investment')
+                    ->relationship('investment', 'investment_name')
+                    ->multiple()
+                    ->searchable()
+                    ->preload(),
+                Tables\Filters\SelectFilter::make('justification')
+                    ->relationship('justification', 'justification_name')
+                    ->multiple()
+                    ->searchable()
+                    ->preload(),
+                Tables\Filters\TernaryFilter::make('data_uploaded'),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([

@@ -14,4 +14,10 @@ class CreateProject extends CreateRecord
     {
         return $this->getResource()::getUrl('index');
     }
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $data['pda_code'] = 'PDA-' . $data['pda_code'];
+        return $data;
+    }
 }

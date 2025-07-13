@@ -51,6 +51,7 @@ class UserResource extends Resource
                 Forms\Components\Select::make('company_id')
                     ->relationship('company', 'name')
                     ->default(null),
+                Forms\Components\Toggle::make('is_active')
             ]);
     }
 
@@ -95,7 +96,8 @@ class UserResource extends Resource
                         default => 'gray',
                     }),
 
-
+                Tables\Columns\IconColumn::make('is_active')
+                    ->boolean(),
                 Tables\Columns\TextColumn::make('company.name')
                     ->numeric()
                     ->sortable(),

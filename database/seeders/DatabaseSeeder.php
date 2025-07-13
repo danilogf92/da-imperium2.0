@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'danilo.granda@corpo-medica.com',
             'password' => Hash::make('Danilogf91'),
             'role' => Role::ADMIN,
+            'is_active' => true,
             'company_id' => $company1->id, // Asociado a la primera empresa
         ]);
 
@@ -47,6 +48,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'user1@email.com',
             'password' => Hash::make('password'),
             'role' => Role::USER,
+            'is_active' => true,
             'company_id' => $company2->id, // Asociado a la primera empresa
         ]);
 
@@ -55,6 +57,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'user2@email.com',
             'password' => Hash::make('password'),
             'role' => Role::USER,
+            'is_active' => false,
             'company_id' => $company3->id, // Asociado a la primera empresa
         ]);
 

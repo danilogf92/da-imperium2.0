@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('password');
             // $table->enum('role', ['admin', 'user'])->default('user');
             $table->string('role')->default(Role::USER);
+            $table->boolean('is_active')->default(false);
             $table->foreignId('company_id')->nullable()->constrained()->nullOnDelete();
             $table->rememberToken();
             $table->timestamps();
